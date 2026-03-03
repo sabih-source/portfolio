@@ -62,8 +62,8 @@ export default function PostHeroSections() {
                     scrollTrigger: {
                         trigger: card,
                         containerAnimation: slideTween, // GSAP ties this deeply to the horizontal timeline motion
-                        start: "left 85%",
-                        end: "left 30%",
+                        start: "left 95%",
+                        end: "left 60%", // Now finishes transition faster so it's sharp sooner
                         scrub: true,
                         id: `card-${i}`
                     }
@@ -206,7 +206,11 @@ export default function PostHeroSections() {
                                     src={item.img}
                                     alt={item.title}
                                     className="project-img"
-                                    style={{ imageRendering: 'auto' }}
+                                    style={{
+                                        imageRendering: '-webkit-optimize-contrast',
+                                        transform: 'translateZ(0)',
+                                        backfaceVisibility: 'hidden'
+                                    }}
                                 />
                                 <h4 className="project-title">{item.title}</h4>
                                 <p className="project-desc">{item.desc}</p>
