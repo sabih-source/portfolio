@@ -159,6 +159,7 @@ export default function ContactPage() {
 
             <div
                 ref={formRef}
+                className="contact-form-container"
                 style={{
                     position: 'relative',
                     zIndex: 5,
@@ -223,7 +224,7 @@ export default function ContactPage() {
                     </button>
                 </form>
 
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginTop: '5rem' }}>
+                <div className="contact-social-icons" style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginTop: '5rem' }}>
                     <a href="https://github.com/sabih-source/" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', transition: 'color 0.3s' }}><Github size={24} /></a>
                     <a href="#linkedin" style={{ color: '#fff', transition: 'color 0.3s' }}><Linkedin size={24} /></a>
                     <a href="#twitter" style={{ color: '#fff', transition: 'color 0.3s' }}><Twitter size={24} /></a>

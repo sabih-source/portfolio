@@ -35,126 +35,112 @@ export default function PostHeroSections() {
         const track = trackRef.current;
         if (!wrapper || !track) return;
 
-        // We calculate horizontal scroll length
-        const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 100);
+        const mm = gsap.matchMedia();
 
-        // Setup the main horizontal scroll driven by vertical pin
-        const slideTween = gsap.to(track, {
-            x: getScrollAmount,
-            ease: "none",
-            scrollTrigger: {
-                trigger: wrapper,
-                start: "top top",
-                end: () => `+=${track.scrollWidth}`, // Scroll amount proportional to content length
-                pin: true,
-                scrub: 1,
-                invalidateOnRefresh: true,
-            }
-        });
+        mm.add({
+            isDesktop: "(min-width: 768px)",
+            isMobile: "(max-width: 767px)"
+        }, (context) => {
+            let { isDesktop } = context.conditions;
 
-        // 3D twist entering for each card powered by containerAnimation
-        cardsRef.current.forEach((card, i) => {
-            gsap.fromTo(card,
-                { rotationY: 45, opacity: 0, scale: 0.8, x: window.innerWidth / 2 },
-                {
-                    rotationY: 0, opacity: 1, scale: 1, x: 0,
-                    ease: "power2.out",
+            if (isDesktop) {
+                // DESKTOP: Horizontal Scroll + Pinning
+                const slideTween = gsap.to(track, {
+                    x: () => -(track.scrollWidth - window.innerWidth + 100),
+                    ease: "none",
                     scrollTrigger: {
-                        trigger: card,
-                        containerAnimation: slideTween, // GSAP ties this deeply to the horizontal timeline motion
-                        start: "left 95%",
-                        end: "left 60%", // Now finishes transition faster so it's sharp sooner
-                        scrub: true,
-                        id: `card-${i}`
+                        trigger: wrapper,
+                        start: "top top",
+                        end: () => `+=${track.scrollWidth}`,
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true,
                     }
-                }
-            );
-        });
-
-        // 3D Tilt Hover Effect for Project Cards
-        cardsRef.current.forEach((card) => {
-            if (!card) return;
-
-            const handleMouseMove = (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const rotateX = (y - centerY) / 8; // Adjust denominator for tilt intensity
-                const rotateY = (centerX - x) / 8;
-
-                gsap.to(card, {
-                    rotationX: rotateX,
-                    rotationY: rotateY,
-                    scale: 1.05,
-                    duration: 0.4,
-                    ease: "power2.out",
-                    perspective: 1000,
-                    transformPerspective: 1000
                 });
-            };
 
-            const handleMouseLeave = () => {
-                gsap.to(card, {
-                    rotationX: 0,
-                    rotationY: 0,
-                    scale: 1,
-                    duration: 0.6,
-                    ease: "elastic.out(1, 0.7)"
+                cardsRef.current.forEach((card, i) => {
+                    gsap.fromTo(card,
+                        { rotationY: 45, opacity: 0, scale: 0.8, x: window.innerWidth / 2 },
+                        {
+                            rotationY: 0, opacity: 1, scale: 1, x: 0,
+                            ease: "power2.out",
+                            scrollTrigger: {
+                                trigger: card,
+                                containerAnimation: slideTween,
+                                start: "left 95%",
+                                end: "left 60%",
+                                scrub: true,
+                                id: `card-${i}`
+                            }
+                        }
+                    );
                 });
-            };
-
-            card.addEventListener('mousemove', handleMouseMove);
-            card.addEventListener('mouseleave', handleMouseLeave);
-        });
-
-        // Add 3D tilt to Expertise cards too
-        const expertiseCards = document.querySelectorAll('.expertise-card');
-        expertiseCards.forEach(card => {
-            const handleMouseMove = (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 12;
-                const rotateY = (centerX - x) / 12;
-
-                gsap.to(card, {
-                    rotationX: rotateX,
-                    rotationY: rotateY,
-                    scale: 1.02,
-                    duration: 0.4,
-                    ease: "power2.out",
-                    transformPerspective: 800
+            } else {
+                // MOBILE: Vertical Stacking + Individual Card Animations
+                cardsRef.current.forEach((card, i) => {
+                    gsap.fromTo(card,
+                        { rotationY: 20, opacity: 0, scale: 0.9, y: 50 },
+                        {
+                            rotationY: 0, opacity: 1, scale: 1, y: 0,
+                            ease: "power2.out",
+                            scrollTrigger: {
+                                trigger: card,
+                                start: "top 95%",
+                                end: "top 70%",
+                                scrub: true,
+                                id: `card-mobile-${i}`
+                            }
+                        }
+                    );
                 });
-            };
+            }
 
-            const handleMouseLeave = () => {
-                gsap.to(card, {
-                    rotationX: 0,
-                    rotationY: 0,
-                    scale: 1,
-                    duration: 0.6,
-                    ease: "elastic.out(1, 0.7)"
-                });
-            };
+            // Tilt Hover Effect (Both Desktop and Mobile)
+            const allAnimatedCards = [...cardsRef.current, ...document.querySelectorAll('.expertise-card')];
+            allAnimatedCards.forEach(card => {
+                if (!card) return;
 
-            card.addEventListener('mousemove', handleMouseMove);
-            card.addEventListener('mouseleave', handleMouseLeave);
-        });
+                const handleMove = (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        return () => {
-            cardsRef.current.forEach((card, i) => {
-                const triggers = ScrollTrigger.getById(`card-${i}`);
-                if (triggers) triggers.kill();
+                    const x = clientX - rect.left;
+                    const y = clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / (isDesktop ? 8 : 15);
+                    const rotateY = (centerX - x) / (isDesktop ? 8 : 15);
+
+                    gsap.to(card, {
+                        rotationX: rotateX,
+                        rotationY: rotateY,
+                        scale: isDesktop ? 1.05 : 1.02,
+                        duration: 0.4,
+                        ease: "power2.out",
+                        transformPerspective: 1000
+                    });
+                };
+
+                const handleLeave = () => {
+                    gsap.to(card, {
+                        rotationX: 0,
+                        rotationY: 0,
+                        scale: 1,
+                        duration: 0.6,
+                        ease: "elastic.out(1, 0.7)"
+                    });
+                };
+
+                card.addEventListener('mousemove', handleMove);
+                card.addEventListener('mouseleave', handleLeave);
+                card.addEventListener('touchstart', handleMove, { passive: true });
+                card.addEventListener('touchend', handleLeave);
             });
-            if (slideTween.scrollTrigger) slideTween.scrollTrigger.kill();
-            slideTween.kill();
-        };
+        });
+
+        return () => mm.revert();
+
     }, []);
 
     const scrollRight = () => { /* GSAP handles layout override */ };

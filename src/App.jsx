@@ -6,6 +6,8 @@ import CodeMomentumExperience from './components/CodeMomentumExperience';
 import PostHeroSections from './components/PostHeroSections';
 import CustomCursor from './components/CustomCursor';
 import ContactPage from './components/ContactPage';
+import Navbar from './components/Navbar';
+import ScrollToTopButton from './components/ScrollToTopButton';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 function ScrollToTop() {
@@ -68,11 +70,13 @@ function App() {
         <Router basename="/portfolio">
             <ScrollToTop />
             <div className="app-container">
+                <Navbar />
                 <CustomCursor />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/contact" element={<ContactPage />} />
                 </Routes>
+                <ScrollToTopButton />
             </div>
         </Router>
     );

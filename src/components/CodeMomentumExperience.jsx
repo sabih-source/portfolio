@@ -119,21 +119,26 @@ export default function CodeMomentumExperience() {
         renderFrame(0);
 
         // 3. Setup ScrollTrigger for pin and scrub sequence!
-        let ctx = gsap.context(() => {
+        const mm = gsap.matchMedia();
+
+        mm.add({
+            isDesktop: "(min-width: 768px)",
+            isMobile: "(max-width: 767px)"
+        }, (context) => {
+            const { isDesktop } = context.conditions;
             const frameObj = { frame: 0 };
 
             const tl = gsap.timeline({
                 scrollTrigger: {
-                    trigger: containerRef.current, // The 100vh wrapper
+                    trigger: containerRef.current,
                     start: 'top top',
-                    end: '+=4000', // Scroll for 4000px natively tied directly 
-                    pin: true,     // GSAP creates pin-spacer perfectly sealing the 1000px gap
-                    scrub: 1.5,    // Fluid smoothing scrub links scroll precisely to animation
+                    end: isDesktop ? '+=4000' : '+=2500', // Shorter scroll for mobile
+                    pin: true,
+                    scrub: isDesktop ? 1.5 : 1, // Tigher scrub for touch
                     anticipatePin: 1
                 }
             });
 
-            // Animate frames through the sequence smoothly tied to scroll
             tl.to(frameObj, {
                 frame: TOTAL_FRAMES - 1,
                 snap: 'frame',
@@ -141,15 +146,12 @@ export default function CodeMomentumExperience() {
                 onUpdate: () => renderFrame(frameObj.frame)
             });
 
-            // Add depth/zoom to the astronaut canvas directly linked to scroll depth
             tl.fromTo(foregroundCanvasRef.current,
                 { scale: 1 },
-                { scale: 1.15, ease: 'none' },
+                { scale: isDesktop ? 1.15 : 1.1, ease: 'none' },
                 0
             );
 
-            // CRITICAL BUG FIX: Asynchronous setup throws off calculation offsets downstream.
-            // Recalculating immediately fixes the 2000px gap and incorrect flow sequence!
             requestAnimationFrame(() => {
                 ScrollTrigger.sort();
                 ScrollTrigger.refresh();
@@ -158,7 +160,7 @@ export default function CodeMomentumExperience() {
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
-            ctx.revert();
+            mm.revert();
         };
     }, [isReady]);
 

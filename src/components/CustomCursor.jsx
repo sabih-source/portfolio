@@ -68,6 +68,7 @@ export default function CustomCursor() {
         <>
             <div
                 ref={cursorRef}
+                className="cursor-follower"
                 style={{
                     position: 'fixed', top: 0, left: 0,
                     width: '8px', height: '8px',
@@ -80,6 +81,7 @@ export default function CustomCursor() {
             />
             <div
                 ref={ringRef}
+                className="cursor-follower"
                 style={{
                     position: 'fixed', top: 0, left: 0,
                     width: '40px', height: '40px',
