@@ -20,28 +20,45 @@ export default function CodeMomentumExperience() {
     // Pad numbers with leading zeros (e.g., 001, 045, 240)
     const getFramePath = (index) => {
         const num = index.toString().padStart(3, '0');
-        return `/assets/ezgif-frame-${num}.png`;
+        const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash if exists
+        return `${baseUrl}/assets/ezgif-frame-${num}.webp`;
     };
 
     useEffect(() => {
         // 1. Preload frames
         let loaded = 0;
+        const startTime = performance.now();
+        const PRIORITY_THRESHOLD = 10; // Load first 10 frames to start fast
+
         for (let i = 1; i <= TOTAL_FRAMES; i++) {
             const img = new Image();
             img.src = getFramePath(i);
+
             img.onload = () => {
                 loaded++;
                 setLoadedFrames(loaded);
-                if (loaded === TOTAL_FRAMES) {
+                // Trigger "Ready" early so user isn't stuck waiting
+                if (loaded === PRIORITY_THRESHOLD) {
                     setIsReady(true);
                 }
+
+                if (loaded === TOTAL_FRAMES) {
+                    const duration = ((performance.now() - startTime) / 1000).toFixed(2);
+                    console.log(`🚀 Performance: All ${TOTAL_FRAMES} frames loaded in ${duration}s`);
+                }
             };
-            // To handle errors without breaking UI:
+
             img.onerror = () => {
                 loaded++;
                 setLoadedFrames(loaded);
-                if (loaded === TOTAL_FRAMES) setIsReady(true);
+                if (loaded === PRIORITY_THRESHOLD) setIsReady(true);
+
+                if (loaded === TOTAL_FRAMES) {
+                    const duration = ((performance.now() - startTime) / 1000).toFixed(2);
+                    console.log(`🚀 Performance (with errors): All frames processed in ${duration}s`);
+                }
             };
+
             frames.current[i - 1] = img;
         }
     }, []);
@@ -81,8 +98,8 @@ export default function CodeMomentumExperience() {
         setTimeout(resizeCanvas, 0);
 
         const renderFrame = (index) => {
-            if (!frames.current[index]) return;
             const img = frames.current[index];
+            if (!img || !img.complete || img.naturalWidth === 0) return;
 
             // Draw ambient (clears implicitly because alpha:false but let's be safe)
             if (ambientCanvas.width !== img.width && img.width > 0) {
@@ -150,7 +167,9 @@ export default function CodeMomentumExperience() {
             {!isReady && (
                 <div className="loading-overlay">
                     <h2 className="heading" style={{ color: 'white', letterSpacing: '4px' }}>INITIALIZING ENGINE</h2>
-                    <p style={{ marginTop: '1rem', opacity: 0.6 }}>{Math.floor((loadedFrames / TOTAL_FRAMES) * 100)}%</p>
+                    <p style={{ marginTop: '1rem', opacity: 0.6, letterSpacing: '2px' }}>
+                        PRELOADING PRIMARY ASSETS...
+                    </p>
                 </div>
             )}
 

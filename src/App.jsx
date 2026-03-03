@@ -65,7 +65,7 @@ function App() {
     }, []);
 
     return (
-        <Router>
+        <Router basename="/portfolio">
             <ScrollToTop />
             <div className="app-container">
                 <CustomCursor />

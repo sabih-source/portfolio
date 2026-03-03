@@ -83,14 +83,14 @@ export default function Achievements() {
     return (
         <section className="section-padding p5-achievements" ref={containerRef} style={{ perspective: "1500px" }}>
             <div className="container">
-                <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                    <h2 className="heading" style={{ fontSize: '3.5rem', marginBottom: '1rem', color: 'var(--color-deep-black)' }}>Hall of Fame</h2>
-                    <p className="expertise-desc" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
+                    <h2 className="heading" style={{ fontSize: '3.5rem', marginBottom: '2.5rem', color: 'var(--color-deep-black)', letterSpacing: '4px' }}>Hall of Fame</h2>
+                    <p className="expertise-desc" style={{ maxWidth: '600px', margin: '0 auto', lineHeight: '1.8' }}>
                         Recognitions and milestones achieved through dedicated technical leadership and algorithmic excellence.
                     </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '5rem' }}>
                     {achievements.map((ach, idx) => (
                         <div
                             key={idx}
@@ -128,8 +128,8 @@ export default function Achievements() {
                             >
                                 {ach.icon}
                             </div>
-                            <h3 className="expertise-title heading" style={{ fontSize: '1.8rem', color: 'var(--color-deep-black)' }}>{ach.title}</h3>
-                            <p className="expertise-desc" style={{ marginTop: '1rem' }}>{ach.desc}</p>
+                            <h3 className="expertise-title heading" style={{ fontSize: '1.8rem', color: 'var(--color-deep-black)', marginTop: '1.5rem', marginBottom: '1.5rem' }}>{ach.title}</h3>
+                            <p className="expertise-desc" style={{ marginTop: '1rem', lineHeight: '1.6' }}>{ach.desc}</p>
                         </div>
                     ))}
                 </div>

@@ -12,9 +12,22 @@ export default function PostHeroSections() {
     const trackRef = useRef(null);
     const cardsRef = useRef([]);
 
+    const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '');
     const projects = [
-        { title: "Virtual Try-On App", desc: "An AI-powered virtual try-on application.", tech: "React • GSAP • AI", img: "/assets/ai-tryon.png" },
-        { title: "Rainwater System", desc: "A dashboard for environmental metrics.", tech: "React • GSAP • AI", img: "/assets/ai-rainwater.png" }
+        {
+            title: "Virtual Try-On App",
+            desc: "An AI-powered virtual try-on application.",
+            tech: "React • GSAP • AI",
+            img: `${baseUrl}/assets/ai-tryon.png`,
+            url: "https://virtual-tryon.lovable.app"
+        },
+        {
+            title: "Rainwater System",
+            desc: "A dashboard for environmental metrics.",
+            tech: "React • GSAP • AI",
+            img: `${baseUrl}/assets/ai-rainwater.png`,
+            url: "https://sabih-bot.github.io/Rainwater/"
+        }
     ];
 
     useEffect(() => {
@@ -58,6 +71,82 @@ export default function PostHeroSections() {
             );
         });
 
+        // 3D Tilt Hover Effect for Project Cards
+        cardsRef.current.forEach((card) => {
+            if (!card) return;
+
+            const handleMouseMove = (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 8; // Adjust denominator for tilt intensity
+                const rotateY = (centerX - x) / 8;
+
+                gsap.to(card, {
+                    rotationX: rotateX,
+                    rotationY: rotateY,
+                    scale: 1.05,
+                    duration: 0.4,
+                    ease: "power2.out",
+                    perspective: 1000,
+                    transformPerspective: 1000
+                });
+            };
+
+            const handleMouseLeave = () => {
+                gsap.to(card, {
+                    rotationX: 0,
+                    rotationY: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    ease: "elastic.out(1, 0.7)"
+                });
+            };
+
+            card.addEventListener('mousemove', handleMouseMove);
+            card.addEventListener('mouseleave', handleMouseLeave);
+        });
+
+        // Add 3D tilt to Expertise cards too
+        const expertiseCards = document.querySelectorAll('.expertise-card');
+        expertiseCards.forEach(card => {
+            const handleMouseMove = (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 12;
+                const rotateY = (centerX - x) / 12;
+
+                gsap.to(card, {
+                    rotationX: rotateX,
+                    rotationY: rotateY,
+                    scale: 1.02,
+                    duration: 0.4,
+                    ease: "power2.out",
+                    transformPerspective: 800
+                });
+            };
+
+            const handleMouseLeave = () => {
+                gsap.to(card, {
+                    rotationX: 0,
+                    rotationY: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    ease: "elastic.out(1, 0.7)"
+                });
+            };
+
+            card.addEventListener('mousemove', handleMouseMove);
+            card.addEventListener('mouseleave', handleMouseLeave);
+        });
+
         return () => {
             cardsRef.current.forEach((card, i) => {
                 const triggers = ScrollTrigger.getById(`card-${i}`);
@@ -80,7 +169,7 @@ export default function PostHeroSections() {
                     <p className="eyebrow">Who I Am</p>
                     <h2 className="intro-title">SABIH UR REHMAN</h2>
                     <p className="intro-subtitle">AI-Augmented Frontend Developer</p>
-                    <p className="intro-desc">
+                    <p className="intro-desc" style={{ lineHeight: '1.8', letterSpacing: '0.4px', marginBottom: '4rem' }}>
                         Specializing in performant, pixel-perfect, and highly interactive user interfaces.
                         Blending cutting-edge web technologies with creative design intuition to engineer scalable digital experiences.
                     </p>
@@ -117,10 +206,16 @@ export default function PostHeroSections() {
                                     src={item.img}
                                     alt={item.title}
                                     className="project-img"
+                                    style={{ imageRendering: 'auto' }}
                                 />
                                 <h4 className="project-title">{item.title}</h4>
                                 <p className="project-desc">{item.desc}</p>
-                                <span className="tech-label">{item.tech}</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                    <span className="tech-label">{item.tech}</span>
+                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="expertise-btn" style={{ padding: '0.5rem 1rem', fontSize: '0.75rem', margin: 0 }}>
+                                        View Project
+                                    </a>
+                                </div>
                             </div>
                         ))}
                     </div>

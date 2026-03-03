@@ -173,14 +173,14 @@ export default function ContactPage() {
                     transformStyle: 'preserve-3d'
                 }}
             >
-                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                    <h1 className="heading" style={{ fontSize: 'clamp(3rem, 6vw, 4.5rem)' }}>Let's Build Something</h1>
-                    <p className="text-body" style={{ color: '#aaa', marginTop: '1rem', fontSize: '1.1rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                    <h1 className="heading" style={{ fontSize: 'clamp(3rem, 6vw, 4.5rem)', letterSpacing: '4px', lineHeight: '1.2' }}>Let's Build <br /> Something</h1>
+                    <p className="text-body" style={{ color: '#aaa', marginTop: '2rem', fontSize: '1.2rem', letterSpacing: '1px' }}>
                         Open to opportunities &bull; AI and Frontend Development
                     </p>
                 </div>
 
-                <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
                     <div>
                         <input
                             type="text"
@@ -223,7 +223,7 @@ export default function ContactPage() {
                     </button>
                 </form>
 
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '3rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', marginTop: '5rem' }}>
                     <a href="https://github.com/sabih-source/" target="_blank" rel="noopener noreferrer" style={{ color: '#fff', transition: 'color 0.3s' }}><Github size={24} /></a>
                     <a href="#linkedin" style={{ color: '#fff', transition: 'color 0.3s' }}><Linkedin size={24} /></a>
                     <a href="#twitter" style={{ color: '#fff', transition: 'color 0.3s' }}><Twitter size={24} /></a>
